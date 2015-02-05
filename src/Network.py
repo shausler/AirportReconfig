@@ -1,4 +1,4 @@
-from igraph.drawing import plot
+#from igraph.drawing import plot
 try:
     import matplotlib.pyplot as plt
 except:
@@ -64,7 +64,8 @@ def makeEdgeDictFromCol(connection, col):
 """
 
 #csvLoader.toOutfile(infile="files\\10000.csv", outfile = "files\\npArrayFlights")
-connections = np.load(file = "files\\npArrayFlights.npy")
+#connections = np.load(file = "C:\\Users\\Shane\\Documents\\Airportfiles\\npArrayFlights.npy") #for laptop
+connections = np.load(file = "C:\\Users\\Shane\\Documents\\Airportfiles\\npArrayFlights.npy") #for desktop
 print connections[:,:]
 
 """print "Started eliminating:"
