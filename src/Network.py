@@ -1,92 +1,46 @@
 #from igraph.drawing import plot
+import collections
+import csv
+from math import sqrt
+
+import community
+import numpy
+
+from NetX import toNetXGraph, partition
+import csvLoader
+import igraph as ig
+import networkx as nx
+import numpy as np
 try:
     import matplotlib.pyplot as plt
 except:
     raise
 
-import numpy as np
-import networkx as nx
-import igraph as ig
-from math import sqrt
-import collections
-import numpy
-import csv
-import community
-import csvLoader
+#csvLoader to parse data into a npy
+csvLoader.toConnectionOutfile(infileConnections="C:\\Users\\Shane\\Documents\\Airportfiles\\18212900_T_DB1B_COUPON.csv",
+                               outfile = "C:\\Users\\Shane\\Documents\\Airportfiles\\npArrayFlights",
+                               num=100) #Only needed when using different data from previous invocation
 
-def toNetXGraph(connection, nodes):
-    gx = nx.Graph()
-    passg = makeEdgeDictFromCol(connection, 4)
-    flight = makeEdgeDictFromCol(connection, 6)
 
-    gx.add_nodes_from(nodes)
-    print gx.nodes()
-    
-    gx.add_edges_from(ebunch = connection[:,2:4])       #how to do attributes
-    #gx.add_weighted_edges_from(ebunch = connection[:,2:4], weight = "flights", attr = connection[:,6])       #how to do attributes    
-    
-    #bb=nx.edge_betweenness_centrality(gx, normalized=False)
-    #print bb
-    #nx.set_edge_attributes(gx, name = 'betweenness', values = bb)
-    nx.set_edge_attributes(gx, name = 'passengerCount', values = passg)
-    nx.set_edge_attributes(gx, name = 'flights', values = flight)
-    #nx.set_node_attributes(gx, name = 'lat', values = )
-    
-    
-    nx.draw_spring(gx,node_size=20,font_size=100)
-    plt.show()
-    print nx.degree_centrality(gx)
-    clique = nx.make_max_clique_graph(gx)
-    #plot(obj = clique)
-    #nx.set_edge_attributes(gx, name='passengers', values = connection[:,3])
-    #nx.set_node_attributes(gx, name='lat', values = )
-    
-    #print gx.edges(data=True)
-    print "NetX loaded"
-    return gx
-    
-def makeEdgeDictFromCol(connection, col):
-    #print connection[:,3]
-    #print connection[:,1:3]
-    myDict = {}
-    for x in xrange(0,len(connection)):
-        #print x
-        #print "(" + str(connection[x,2]) + ", " + str(connection[x,3]) + ")"
-        myDict[(connection[x,2], connection[x,3])] = connection[x,col]
-    return myDict
+"""csvLoader.lookupToOutfile(infileLookup="C:\\Users\\Shane\\Documents\\Airportfiles\\Airport Master Coordinates.csv",
+outfile = "C:\\Users\\Shane\\Documents\\Airportfiles\\npArrayFlightsLookup") #Only needed when using different data from previous invocation"""
 
-#for lat and long
-"""def makeNodeDictFromCol(node,col): 
-    myDict = {}
-    for x in xrange(0,len(node)):
-        myDict[(node[x])] = #what needs to go here?
-    return myDict
-"""
-
-#csvLoader.toOutfile(infile="files\\10000.csv", outfile = "files\\npArrayFlights")
+#load numpy connection graph from *.npy
 #connections = np.load(file = "C:\\Users\\Shane\\Documents\\Airportfiles\\npArrayFlights.npy") #for laptop
 connections = np.load(file = "C:\\Users\\Shane\\Documents\\Airportfiles\\npArrayFlights.npy") #for desktop
-print connections[:,:]
+lookup = np.load(file = "C:\\Users\\Shane\\Documents\\Airportfiles\\npArrayFlightsLookup.npy") #for desktop
+#print "Connections " + str(connections[:,:])
+#print lookup[:,:]
 
-"""print "Started eliminating:"
-x = 0
-leng = len(connections)
-while x < leng:
-    print str(x) + " " + str(connections[x,6])###############################################
-    if connections[x,6]<10:
-        connections = np.delete(connections, obj = x)
-        print "Deleted"
-        leng = len(connections)
-        x-=1
-    x+=1    
-print "Finished eliminating. Edges: " + str(len(connections))
-"""
+connections = csvLoader.thresholdConnectionsByPassenger(connections, 0)
 
-#print connections
-nodes = csvLoader.toNodeList(connections)
+nodes = csvLoader.toNodeList(connections)#convert numpy array connections to node list nodes
 #print nodes
-#print nodes
+
+#make netX graph with connections(links) and nodes
 gx = toNetXGraph(connections, nodes)
-#nx.draw(gx)
-#plt.show()
+"""nx.draw(gx)
+plt.show()"""
+partition(gx)
+
 print "Done"
