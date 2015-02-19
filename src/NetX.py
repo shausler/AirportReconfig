@@ -4,7 +4,10 @@ Created on Feb 5, 2015
 @author: Shane
 '''
 import community
+
 import networkx as nx
+
+
 try:
     import matplotlib.pyplot as plt
 except:
@@ -34,11 +37,12 @@ except:
 def toNetXGraph(connection, nodes):
     gx = nx.Graph() # empty graph
     
-    passg = makeEdgeDictFromCol(connection, 4) #Create dictionary for edges from passenger totals
-    flight = makeEdgeDictFromCol(connection, 6) #create dictionary for edges from the number of aircraft
-
+    passg = makeEdgeDictFromColumn(connection, 4) #Create dictionary for edges from passenger totals
+    flight = makeEdgeDictFromColumn(connection, 6) #create dictionary for edges from the number of aircraft
+    """---------------------------------------"""
     gx.add_nodes_from(nodes) #add netx nodes from the input nodes
-    
+    #gx.add_nodes_from(nodes, pos=(nodes)) #add netx nodes from the input nodes
+   
     gx.add_edges_from(ebunch = connection[:,2:4])       #how to do attributes
     #gx.add_weighted_edges_from(ebunch = connection[:,2:4], weight = "flights", attr = connection[:,6])       #how to do attributes    
     
@@ -63,22 +67,44 @@ def toNetXGraph(connection, nodes):
     return gx
 
 #Dictionary for edges
-def makeEdgeDictFromCol(connection, col):
+def makeEdgeDictFromColumn(connection, col):
     myDict = {}
     for x in xrange(0,len(connection)):
         #print x
         #print "(" + str(connection[x,2]) + ", " + str(connection[x,3]) + ")"
         myDict[(connection[x,2], connection[x,3])] = connection[x,col]
     return myDict
-
-#for lat and long
-def makeNodeDictFromCol(node,col): 
+"""def makeNodeDictFromColumn(npNodeArray,lookup): 
+    print "Nodes contains:"
+    print str(npNodeArray[0])
+    print "Lookup contains:"
+    print lookup[0,0]
+    
+    for n in xrange(0,len(npNodeArray)-1):
+        code = str(npNodeArray[n])
+        #print "Searching mate for " + str(npNodeArray[n])
+        for l in xrange(0,len(lookup)-1):
+            if lookup[l,0] == code:
+                print "found " +  str(lookup[l,0])
+                #npNodeArray.set_position(lookup[l,10],lookup[l,11])
+                #np.set_position(npNodeArray,(lookup[l,10],lookup[l,11]))
+                nx.set_node_attributes(G=npNodeArray, name="position", values=(lookup[l,10],lookup[l,11]))
+    #Find the row in lookup that corresponds with each row in node and 
+    #apply the lat and long to that node's position
     myDict = {}
-    for x in xrange(0,len(node)):
-        myDict[(node[x])] = #what needs to go here?
+    for x in xrange(0,len(npNodeArray)):
+        npNodeArray.set_positions()
     return myDict
-
-
+#for lat and long
+    def makeNodeDictFromColumn1(npNodeArray,col,lookup): 
+    print npNodeArray
+    myDict = {}
+    for x in xrange(0,len(npNodeArray)):
+        myDict[(npNodeArray[x])] = #what needs to go here?
+    npNodeArray.set_positions()
+    return myDict
+#for lat and long
+"""
 def partition(gx):
     nx.transitivity(gx)
     
@@ -91,5 +117,4 @@ def partition(gx):
     #plot, color nodes using community structure
     values = [partX.get(node) for node in gx.nodes()]
     nx.draw_spring(gx, cmap = plt.get_cmap('jet'), node_color = values, node_size=30, with_labels=False)
-    plt.show()
-    
+    plt.show()   
