@@ -355,8 +355,11 @@ def thresholdConnectionsByPassenger(connection, threshNum):
 
 #create a list of nodes from a numpy array
 def toNodeList(connection,lookup):
-    nodes = pd.DataFrame(index = lookup.dtypes)
-    print nodes
+    """nodes = pd.DataFrame(index = lookup.dtypes)
+    for x in xrange(0,len(connection)):
+        
+    print nodes"""
+    
     """
     for all of connection, 
         if connection[1] not in node? (! any cells where node == connection[1])
@@ -364,7 +367,7 @@ def toNodeList(connection,lookup):
         if connection[2] not in node?
             add it
     """
-    """#connection = #########.
+    #connection = #########.
     nodes = np.array(0)
     for x in xrange(0,len(connection)):
         #print x
@@ -381,22 +384,27 @@ def toNodeList(connection,lookup):
     nodes = np.sort(nodes)
     #print "Sorted: " + str(node)
     print "Nodes: " + str(len(nodes))
-    return nodes"""
+    return nodes
 
 def concatNodeAndLookup(nodes,lookup):
     
-    print type(nodes[0])
+    """print type(nodes[0])
     print lookup.iloc[0]['AIRPORT_SEQ_ID']
-    print type(lookup.iloc[0]['AIRPORT_SEQ_ID'])
+    print type(lookup.iloc[0]['AIRPORT_SEQ_ID'])"""
     
-    columns = []
-    df2 = pd.DataFrame()
-    """for x in xrange(0,len(nodes)-1):#for every node
+    thisList = []
+    #n=0
+    #df2 = pd.DataFrame(data = ,index = lookup.dtypes)
+    #print lookup[n:n+1]
+    #thisList.append(lookup[n:n+1])
+    
+    for x in xrange(0,len(nodes)-1):#for every node
         for n in xrange(0,len(lookup)-1):#look through lookup
             if nodes[x] == lookup.iloc[n]['AIRPORT_SEQ_ID']:
-     """           
-                
-    
+                #print lookup[n:n+1]
+                thisList.append(lookup[n:n+1])
+    df2 = pd.DataFrame(data = thisList ,index = lookup.dtypes)
+    print df2
     """nAndL = np.empty((len(nodes),len(lookup[0])))  #numpy array to fit (n) nodes and lookup (len=15)
     
     #print "Nodes+Lookup contains: " + str(nAndL.size) + " (=" + str(len(nodes)) + "*" + str(len(lookup[0])) + ")"
